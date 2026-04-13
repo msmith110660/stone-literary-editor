@@ -22,12 +22,23 @@
       "output": "dist"
     },
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico",
+      "allowElevation": true,
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": false,
+      "deleteAppDataOnUninstall": true
     },
     "files": [
       "main.js",
       "server.js",
       "public/**/*",
+      "build/icon.ico",
       "node_modules/**/*",
       "package.json"
     ]
