@@ -34,7 +34,7 @@
       width: 100%;
     }
 
-    /* ─── Input View ─── */
+    /* ─── Labels ─── */
     .label {
       font-size: 12px;
       font-weight: 600;
@@ -44,6 +44,7 @@
       margin-bottom: 6px;
     }
 
+    /* ─── API Key Row ─── */
     .api-row {
       display: flex;
       gap: 8px;
@@ -62,9 +63,106 @@
     }
     .api-row input:focus { border-color: #4d8df5; box-shadow: 0 0 0 3px rgba(77,141,245,0.2); }
 
+    /* ─── Settings Row ─── */
+    .settings-row {
+      display: flex;
+      gap: 28px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 16px;
+      padding: 12px 16px;
+      background: #222;
+      border: 1px solid #333;
+      border-radius: 8px;
+    }
+    .setting-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .setting-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #666;
+      white-space: nowrap;
+    }
+    .pill-group { display: flex; gap: 4px; }
+    .pill {
+      padding: 5px 13px;
+      border-radius: 20px;
+      background: #2e2e2e;
+      color: #999;
+      font-size: 13px;
+      font-weight: 500;
+      border: 1px solid #3a3a3a;
+      cursor: pointer;
+      transition: all 0.12s;
+    }
+    .pill:hover { background: #383838; color: #e8e8e8; }
+    .pill.active { background: #4d8df5; color: #fff; border-color: #4d8df5; }
+
+    /* ─── Ignore List ─── */
+    .ignore-section { margin-bottom: 16px; }
+    .ignore-toggle {
+      background: none;
+      border: none;
+      color: #666;
+      font-size: 13px;
+      cursor: pointer;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.12s;
+    }
+    .ignore-toggle:hover { color: #aaa; }
+    .ignore-count {
+      background: #333;
+      color: #aaa;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: 10px;
+    }
+    .ignore-panel {
+      margin-top: 10px;
+      background: #222;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+    .ignore-hint {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+    .ignore-input {
+      width: 100%;
+      min-height: 56px;
+      background: #2a2a2a;
+      border: 1px solid #444;
+      border-radius: 6px;
+      color: #e8e8e8;
+      font-size: 14px;
+      padding: 10px 12px;
+      resize: vertical;
+      margin-bottom: 10px;
+      font-family: inherit;
+      outline: none;
+    }
+    .ignore-input:focus { border-color: #4d8df5; box-shadow: 0 0 0 3px rgba(77,141,245,0.2); }
+    .ignore-input::placeholder { color: #555; }
+    .ignore-save-row { display: flex; align-items: center; gap: 10px; }
+    .ignore-saved { font-size: 13px; color: #34d399; opacity: 0; transition: opacity 0.3s; }
+    .ignore-saved.show { opacity: 1; }
+
+    /* ─── Textarea ─── */
     #text-input {
       width: 100%;
-      height: 420px;
+      height: 380px;
       padding: 18px 20px;
       border: 1px solid #444;
       border-radius: 8px;
@@ -103,6 +201,7 @@
     .btn-ghost { background: #333; color: #e8e8e8; }
     .btn-ghost:hover { background: #3d3d3d; }
     .btn-ghost:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-sm { padding: 6px 14px; font-size: 13px; }
 
     /* ─── Error ─── */
     .error-box {
@@ -135,6 +234,21 @@
       text-align: center;
     }
 
+    /* ─── Session Badge ─── */
+    .session-badge {
+      font-size: 12px;
+      color: #555;
+      display: flex;
+      gap: 6px;
+    }
+    .session-badge span {
+      background: #2a2a2a;
+      border: 1px solid #3a3a3a;
+      border-radius: 10px;
+      padding: 2px 8px;
+      color: #888;
+    }
+
     /* ─── Issue Card ─── */
     .issue-card {
       background: #262626;
@@ -159,13 +273,14 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
-    .type-grammar     { background: #3b1a1a; color: #f87171; }
-    .type-spelling    { background: #3b1a1a; color: #f87171; }
-    .type-punctuation { background: #3b2a0a; color: #fbbf24; }
-    .type-clarity     { background: #1a2a3b; color: #60a5fa; }
-    .type-word-choice { background: #2a1a3b; color: #c084fc; }
-    .type-style       { background: #1a3b2a; color: #34d399; }
-    .type-default     { background: #333;    color: #aaa; }
+    .type-grammar        { background: #3b1a1a; color: #f87171; }
+    .type-spelling       { background: #3b1a1a; color: #f87171; }
+    .type-punctuation    { background: #3b2a0a; color: #fbbf24; }
+    .type-capitalisation { background: #3b2a0a; color: #fbbf24; }
+    .type-clarity        { background: #1a2a3b; color: #60a5fa; }
+    .type-word-choice    { background: #2a1a3b; color: #c084fc; }
+    .type-style          { background: #1a3b2a; color: #34d399; }
+    .type-default        { background: #333;    color: #aaa; }
 
     /* ─── Text Display ─── */
     .text-display {
@@ -249,71 +364,42 @@
     }
     .help-btn:hover { background: #4d8df5; color: #fff; }
 
-    /* ─── Help Modal ─── */
-    #help-modal {
+    /* ─── Modal ─── */
+    .modal-overlay {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.7);
+      background: rgba(0,0,0,0.75);
       z-index: 300;
       align-items: center;
       justify-content: center;
     }
-    #help-modal.visible { display: flex; }
-
+    .modal-overlay.visible { display: flex; }
     .modal-box {
       background: #262626;
       border: 1px solid #444;
       border-radius: 12px;
       padding: 32px 36px;
-      max-width: 540px;
+      max-width: 560px;
       width: 90%;
       color: #e8e8e8;
       position: relative;
+      max-height: 85vh;
+      overflow-y: auto;
     }
-    .modal-box h2 {
-      font-size: 17px;
-      font-weight: 600;
-      margin-bottom: 20px;
-      color: #fff;
-    }
+    .modal-box h2 { font-size: 17px; font-weight: 600; margin-bottom: 20px; color: #fff; }
     .modal-box h3 {
-      font-size: 13px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: #4d8df5;
-      margin: 20px 0 6px;
+      font-size: 12px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.5px; color: #4d8df5; margin: 20px 0 6px;
     }
-    .modal-box h3:first-of-type { margin-top: 0; }
-    .modal-box p {
-      font-size: 14px;
-      line-height: 1.65;
-      color: #bbb;
-      margin-bottom: 4px;
-    }
-    .modal-box a {
-      color: #4d8df5;
-      text-decoration: none;
-    }
+    .modal-box p { font-size: 14px; line-height: 1.65; color: #bbb; margin-bottom: 4px; }
+    .modal-box a { color: #4d8df5; text-decoration: none; }
     .modal-box a:hover { text-decoration: underline; }
-    .modal-box ol {
-      padding-left: 18px;
-      font-size: 14px;
-      line-height: 1.8;
-      color: #bbb;
-    }
+    .modal-box ol, .modal-box ul { padding-left: 18px; font-size: 14px; line-height: 1.8; color: #bbb; }
     .modal-close {
-      position: absolute;
-      top: 14px;
-      right: 16px;
-      background: none;
-      border: none;
-      color: #666;
-      font-size: 20px;
-      cursor: pointer;
-      padding: 4px 8px;
-      border-radius: 4px;
+      position: absolute; top: 14px; right: 16px;
+      background: none; border: none; color: #666;
+      font-size: 20px; cursor: pointer; padding: 4px 8px; border-radius: 4px;
     }
     .modal-close:hover { color: #e8e8e8; background: #333; }
   </style>
@@ -326,13 +412,13 @@
 </header>
 
 <!-- ── Help Modal ── -->
-<div id="help-modal" onclick="closeHelpOnBackdrop(event)">
+<div id="help-modal" class="modal-overlay" onclick="closeOnBackdrop(event,'help-modal')">
   <div class="modal-box">
     <button class="modal-close" onclick="toggleHelp()">✕</button>
     <h2>Getting Started</h2>
 
     <h3>What this app does</h3>
-    <p>Paste your manuscript or document text and the app will scan it for mechanical errors — spelling, grammar, and punctuation. Each issue is highlighted so you can review it and decide whether to fix it or keep it as intentional author voice.</p>
+    <p>Paste your manuscript or document and the app scans it for errors. Each flagged issue is highlighted so you can review it and decide whether to fix it or keep it as intentional author voice.</p>
 
     <h3>Getting an API Key</h3>
     <ol>
@@ -341,19 +427,36 @@
       <li>Navigate to <strong>API Keys</strong> and click <strong>Create Key</strong></li>
       <li>Copy the key — it starts with <code style="color:#4d8df5">sk-ant-</code></li>
     </ol>
+    <p>Your key is saved automatically after first use.</p>
 
-    <h3>Using the app</h3>
+    <h3>Genre</h3>
+    <ul>
+      <li><strong>Fiction</strong> — respects fragments, dialect, and stylistic voice</li>
+      <li><strong>Non-fiction</strong> — respects author voice, flags mechanical errors</li>
+      <li><strong>Academic</strong> — strict grammar and punctuation standards</li>
+      <li><strong>Business</strong> — professional writing conventions</li>
+    </ul>
+
+    <h3>Pass Type</h3>
+    <ul>
+      <li><strong>Errors Only</strong> — spelling, grammar, punctuation only</li>
+      <li><strong>Full Pass</strong> — also flags clarity, word choice, and style</li>
+    </ul>
+
+    <h3>Ignore List</h3>
+    <p>Add character names, invented words, or any terms you don't want flagged. Separate entries with commas.</p>
+
+    <h3>Usage</h3>
     <ol>
-      <li>Paste your API key into the key field — it is saved automatically after first use</li>
-      <li>Paste your text into the main area (up to ~10,000 words)</li>
-      <li>Click <strong>Analyze Text</strong> and wait a few seconds</li>
+      <li>Set your genre and pass type</li>
+      <li>Paste your text and click <strong>Analyze Text</strong></li>
       <li>Use <strong>Next / Prev</strong> to step through each flagged issue</li>
-      <li>Review the suggestion — fix it in your document or skip it if it's intentional</li>
+      <li>Fix it in your document or skip if it's intentional</li>
       <li>Click <strong>New</strong> to start a fresh session</li>
     </ol>
 
-    <h3>Note on API costs</h3>
-    <p>Each analysis uses the Anthropic API, which charges per use. A 10,000-word document costs roughly $0.01–$0.03. Usage is billed directly to your Anthropic account.</p>
+    <h3>API costs</h3>
+    <p>Each analysis costs roughly $0.01–$0.03 per 10,000 words, billed directly to your Anthropic account.</p>
   </div>
 </div>
 
@@ -361,10 +464,48 @@
 
   <!-- ── Input View ── -->
   <div id="input-view">
+
     <div class="label">Anthropic API Key</div>
     <div class="api-row">
       <input type="password" id="api-key" placeholder="sk-ant-api03-..." autocomplete="off" />
       <button class="btn-ghost" id="show-key-btn" onclick="toggleKeyVisibility()">Show</button>
+    </div>
+
+    <!-- Settings -->
+    <div class="settings-row">
+      <div class="setting-group">
+        <span class="setting-label">Genre</span>
+        <div class="pill-group" id="genre-pills">
+          <button class="pill" data-value="fiction"    onclick="setPill('genre',this)">Fiction</button>
+          <button class="pill" data-value="nonfiction" onclick="setPill('genre',this)">Non-fiction</button>
+          <button class="pill" data-value="academic"   onclick="setPill('genre',this)">Academic</button>
+          <button class="pill" data-value="business"   onclick="setPill('genre',this)">Business</button>
+        </div>
+      </div>
+      <div class="setting-group">
+        <span class="setting-label">Pass</span>
+        <div class="pill-group" id="severity-pills">
+          <button class="pill" data-value="errors" onclick="setPill('severity',this)">Errors Only</button>
+          <button class="pill" data-value="full"   onclick="setPill('severity',this)">Full Pass</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ignore List -->
+    <div class="ignore-section">
+      <button class="ignore-toggle" onclick="toggleIgnorePanel()">
+        ▸ Ignore List <span class="ignore-count" id="ignore-count" style="display:none"></span>
+      </button>
+      <div id="ignore-panel" style="display:none">
+        <div class="ignore-panel">
+          <p class="ignore-hint">Words or phrases to never flag — character names, invented words, proper nouns, etc. Separate with commas.</p>
+          <textarea class="ignore-input" id="ignore-input" placeholder="e.g. Rancet, Graham Clan, Blackwood…"></textarea>
+          <div class="ignore-save-row">
+            <button class="btn-ghost btn-sm" onclick="saveIgnoreList()">Save</button>
+            <span class="ignore-saved" id="ignore-saved">Saved ✓</span>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="label">Text to Review</div>
@@ -382,6 +523,7 @@
     <div class="nav-bar">
       <button class="btn-ghost" onclick="backToInput()">← Back</button>
       <button class="btn-ghost" onclick="newSession()">New</button>
+      <div class="session-badge" id="session-badge"></div>
       <div class="spacer"></div>
       <button class="btn-ghost" id="prev-btn" onclick="navigate(-1)">← Prev</button>
       <span class="counter" id="issue-counter"></span>
@@ -401,22 +543,92 @@
 <!-- ── Loading ── -->
 <div id="loading">
   <div class="spinner"></div>
-  <p>Analyzing your text…</p>
+  <p id="loading-msg">Analyzing your text…</p>
 </div>
 
 <script>
   // ── State ──────────────────────────────────────────────────────────────────
-  let issues      = [];   // raw from API: [{text, issue, type}]
-  let ranges      = [];   // [{start, end, issueIndex}] sorted by position
-  let current     = 0;    // index into ranges
-  let docText     = '';
+  let issues     = [];
+  let ranges     = [];
+  let current    = 0;
+  let docText    = '';
+  let genre      = 'fiction';
+  let severity   = 'errors';
+  let ignoreList = [];
 
   // ── Init ───────────────────────────────────────────────────────────────────
   window.addEventListener('load', () => {
-    const stored = localStorage.getItem('editor_api_key');
-    if (stored) document.getElementById('api-key').value = stored;
+    const key = localStorage.getItem('editor_api_key');
+    if (key) document.getElementById('api-key').value = key;
+
+    genre      = localStorage.getItem('editor_genre')    || 'fiction';
+    severity   = localStorage.getItem('editor_severity') || 'errors';
+    ignoreList = JSON.parse(localStorage.getItem('editor_ignore') || '[]');
+
+    activatePills();
+    updateIgnoreCount();
+
+    const savedIgnore = ignoreList.join(', ');
+    if (savedIgnore) document.getElementById('ignore-input').value = savedIgnore;
+
     updateWordCount();
   });
+
+  // ── Pills ──────────────────────────────────────────────────────────────────
+  function activatePills() {
+    document.querySelectorAll('#genre-pills .pill').forEach(p => {
+      p.classList.toggle('active', p.dataset.value === genre);
+    });
+    document.querySelectorAll('#severity-pills .pill').forEach(p => {
+      p.classList.toggle('active', p.dataset.value === severity);
+    });
+  }
+
+  function setPill(type, btn) {
+    const group = type === 'genre' ? 'genre-pills' : 'severity-pills';
+    document.querySelectorAll(`#${group} .pill`).forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    if (type === 'genre') {
+      genre = btn.dataset.value;
+      localStorage.setItem('editor_genre', genre);
+    } else {
+      severity = btn.dataset.value;
+      localStorage.setItem('editor_severity', severity);
+    }
+  }
+
+  // ── Ignore List ────────────────────────────────────────────────────────────
+  function toggleIgnorePanel() {
+    const panel  = document.getElementById('ignore-panel');
+    const toggle = document.querySelector('.ignore-toggle');
+    const open   = panel.style.display === 'none';
+    panel.style.display  = open ? 'block' : 'none';
+    toggle.textContent   = '';
+    const arrow = open ? '▾' : '▸';
+    const count = document.getElementById('ignore-count').cloneNode(true);
+    toggle.append(`${arrow} Ignore List `);
+    toggle.appendChild(count);
+  }
+
+  function saveIgnoreList() {
+    const raw = document.getElementById('ignore-input').value;
+    ignoreList = raw.split(',').map(s => s.trim()).filter(Boolean);
+    localStorage.setItem('editor_ignore', JSON.stringify(ignoreList));
+    updateIgnoreCount();
+    const saved = document.getElementById('ignore-saved');
+    saved.classList.add('show');
+    setTimeout(() => saved.classList.remove('show'), 2000);
+  }
+
+  function updateIgnoreCount() {
+    const el = document.getElementById('ignore-count');
+    if (ignoreList.length > 0) {
+      el.textContent = ignoreList.length;
+      el.style.display = '';
+    } else {
+      el.style.display = 'none';
+    }
+  }
 
   // ── UI helpers ─────────────────────────────────────────────────────────────
   function updateWordCount() {
@@ -433,16 +645,16 @@
   }
 
   function showError(msg) {
-    document.getElementById('input-error').innerHTML =
-      `<div class="error-box">${msg}</div>`;
+    document.getElementById('input-error').innerHTML = `<div class="error-box">${msg}</div>`;
   }
   function clearError() {
     document.getElementById('input-error').innerHTML = '';
   }
 
-  function setLoading(on) {
+  function setLoading(on, msg) {
     document.getElementById('loading').classList.toggle('visible', on);
     document.getElementById('analyze-btn').disabled = on;
+    if (msg) document.getElementById('loading-msg').textContent = msg;
   }
 
   // ── Analyze ────────────────────────────────────────────────────────────────
@@ -455,13 +667,15 @@
     clearError();
 
     localStorage.setItem('editor_api_key', apiKey);
-    setLoading(true);
+
+    const passLabel = severity === 'full' ? 'Full Pass' : 'Errors Only';
+    setLoading(true, `Running ${passLabel} on ${genre} text…`);
 
     try {
       const res  = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, apiKey })
+        body: JSON.stringify({ text, apiKey, genre, severity, ignoreList })
       });
       const data = await res.json();
 
@@ -485,7 +699,6 @@
   function buildRanges() {
     ranges = [];
     const used = [];
-
     for (let i = 0; i < issues.length; i++) {
       const r = findInDoc(issues[i].text, used);
       if (r) {
@@ -493,66 +706,50 @@
         used.push(r);
       }
     }
-
-    // Sort top-to-bottom so Prev/Next follows reading order
     ranges.sort((a, b) => a.start - b.start);
   }
 
   function findInDoc(needle, usedRanges) {
     if (!needle || needle.length < 2) return null;
-
     const hayLower    = docText.toLowerCase();
     const needleLower = needle.toLowerCase();
     let pos = 0;
-
     while (pos < hayLower.length) {
       const idx = hayLower.indexOf(needleLower, pos);
       if (idx === -1) break;
-
       const end = idx + needle.length;
       const overlaps = usedRanges.some(r => idx < r.end && end > r.start);
       if (!overlaps) return { start: idx, end };
-
       pos = idx + 1;
     }
-
-    // Retry with trimmed needle (handles leading/trailing whitespace from Claude)
     const trimmed = needle.trim();
     if (trimmed !== needle && trimmed.length >= 2) return findInDoc(trimmed, usedRanges);
-
     return null;
   }
 
   // ── Snippet rendering ──────────────────────────────────────────────────────
   function getSnippetBounds(idx) {
     const r = ranges[idx];
-    const CONTEXT = 300;
-
+    const CONTEXT  = 300;
     const rawStart = Math.max(0, r.start - CONTEXT);
     const rawEnd   = Math.min(docText.length, r.end + CONTEXT);
-
     let sStart = rawStart;
     let sEnd   = rawEnd;
 
-    // Snap start forward to beginning of a sentence
     if (rawStart > 0) {
       const before = docText.slice(rawStart, r.start);
       let best = -1;
       ['. ', '! ', '? ', '\n'].forEach(sep => {
         const i = before.lastIndexOf(sep);
         if (i >= 0) {
-          const pos = i + (sep === '\n' ? 1 : sep.length);
-          if (pos > best) best = pos;
+          const p = i + (sep === '\n' ? 1 : sep.length);
+          if (p > best) best = p;
         }
       });
       if (best >= 0) sStart = rawStart + best;
-      else {
-        const sp = before.indexOf(' ');
-        if (sp >= 0) sStart = rawStart + sp + 1;
-      }
+      else { const sp = before.indexOf(' '); if (sp >= 0) sStart = rawStart + sp + 1; }
     }
 
-    // Snap end to end of a sentence
     if (rawEnd < docText.length) {
       const after = docText.slice(r.end, rawEnd);
       let best = Infinity;
@@ -570,42 +767,28 @@
 
   function renderSnippet(idx) {
     const display = document.getElementById('text-display');
-
     if (ranges.length === 0) {
       display.innerHTML = `<div class="no-issues">No issues found — your text looks great.</div>`;
       return;
     }
-
     const { sStart, sEnd } = getSnippetBounds(idx);
-
-    // All ranges visible within this snippet window
-    const visible = ranges
-      .map((r, i) => ({ ...r, ri: i }))
-      .filter(r => r.start >= sStart && r.end <= sEnd);
-
+    const visible = ranges.map((r, i) => ({ ...r, ri: i })).filter(r => r.start >= sStart && r.end <= sEnd);
     let html = sStart > 0 ? '<span class="ellipsis">… </span>' : '';
     let pos  = sStart;
-
     for (const r of visible) {
       if (r.start < pos) continue;
       html += escHtml(docText.slice(pos, r.start));
       html += `<span class="highlight${r.ri === idx ? ' active' : ''}" data-ri="${r.ri}" onclick="jumpTo(${r.ri})">`
-            + escHtml(docText.slice(r.start, r.end))
-            + `</span>`;
+            + escHtml(docText.slice(r.start, r.end)) + `</span>`;
       pos = r.end;
     }
-
     html += escHtml(docText.slice(pos, sEnd));
     html += sEnd < docText.length ? '<span class="ellipsis"> …</span>' : '';
-
     display.innerHTML = html;
   }
 
   function escHtml(s) {
-    return s.replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;');
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
   // ── Navigation ─────────────────────────────────────────────────────────────
@@ -623,20 +806,14 @@
 
   function updateIssueCard() {
     if (ranges.length === 0) return;
-
     const r     = ranges[current];
     const issue = issues[r.issueIndex];
     const type  = (issue.type || 'default').replace(/[\s_]/g, '-').toLowerCase();
-
-    document.getElementById('issue-counter').textContent =
-      `${current + 1} of ${ranges.length}`;
-
+    document.getElementById('issue-counter').textContent = `${current + 1} of ${ranges.length}`;
     const badge = document.getElementById('issue-type-badge');
     badge.textContent = issue.type || 'issue';
     badge.className   = `type-badge type-${type}`;
-
     document.getElementById('issue-desc').textContent = issue.issue;
-
     document.getElementById('prev-btn').disabled = current === 0;
     document.getElementById('next-btn').disabled = current === ranges.length - 1;
   }
@@ -645,6 +822,12 @@
   function switchToResults() {
     document.getElementById('input-view').style.display   = 'none';
     document.getElementById('results-view').style.display = 'block';
+
+    // Show session settings as badges in nav bar
+    const genreLabels    = { fiction:'Fiction', nonfiction:'Non-fiction', academic:'Academic', business:'Business' };
+    const severityLabels = { errors:'Errors Only', full:'Full Pass' };
+    document.getElementById('session-badge').innerHTML =
+      `<span>${genreLabels[genre] || genre}</span><span>${severityLabels[severity] || severity}</span>`;
 
     if (ranges.length === 0) {
       document.getElementById('issue-card').style.display  = 'none';
@@ -655,7 +838,6 @@
       document.getElementById('issue-card').style.display = '';
       updateIssueCard();
     }
-
     renderSnippet(current);
   }
 
@@ -668,10 +850,7 @@
   function newSession() {
     document.getElementById('text-input').value = '';
     document.getElementById('word-count').textContent = '0 words';
-    issues  = [];
-    ranges  = [];
-    current = 0;
-    docText = '';
+    issues = []; ranges = []; current = 0; docText = '';
     backToInput();
   }
 
@@ -680,8 +859,10 @@
     document.getElementById('help-modal').classList.toggle('visible');
   }
 
-  function closeHelpOnBackdrop(e) {
-    if (e.target === document.getElementById('help-modal')) toggleHelp();
+  function closeOnBackdrop(e, id) {
+    if (e.target === document.getElementById(id)) {
+      document.getElementById(id).classList.remove('visible');
+    }
   }
 </script>
 </body>
