@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stone Literary LLC Editor</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #1a1a1a;
+      color: #e8e8e8;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: #1a1a1a;
+      border-bottom: 1px solid #333;
+      padding: 14px 28px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    header h1 { font-size: 17px; font-weight: 600; letter-spacing: -0.3px; color: #e8e8e8; }
+
+    .main {
+      flex: 1;
+      padding: 28px 24px;
+      max-width: 860px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* ─── Input View ─── */
+    .label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #888;
+      margin-bottom: 6px;
+    }
+
+    .api-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+    .api-row input {
+      flex: 1;
+      padding: 9px 12px;
+      border: 1px solid #444;
+      border-radius: 6px;
+      font-size: 13px;
+      font-family: 'SF Mono', 'Consolas', monospace;
+      background: #2a2a2a;
+      color: #e8e8e8;
+      outline: none;
+    }
+    .api-row input:focus { border-color: #4d8df5; box-shadow: 0 0 0 3px rgba(77,141,245,0.2); }
+
+    #text-input {
+      width: 100%;
+      height: 420px;
+      padding: 18px 20px;
+      border: 1px solid #444;
+      border-radius: 8px;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 15px;
+      line-height: 1.75;
+      resize: vertical;
+      background: #2a2a2a;
+      outline: none;
+      color: #e8e8e8;
+    }
+    #text-input:focus { border-color: #4d8df5; box-shadow: 0 0 0 3px rgba(77,141,245,0.2); }
+    #text-input::placeholder { color: #555; }
+
+    .bottom-row {
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    #word-count { font-size: 13px; color: #666; margin-left: auto; }
+
+    /* ─── Buttons ─── */
+    button {
+      padding: 9px 18px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.12s, opacity 0.12s;
+    }
+    .btn-primary { background: #4d8df5; color: #fff; }
+    .btn-primary:hover { background: #3a7de8; }
+    .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn-ghost { background: #333; color: #e8e8e8; }
+    .btn-ghost:hover { background: #3d3d3d; }
+    .btn-ghost:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ─── Error ─── */
+    .error-box {
+      margin-top: 12px;
+      padding: 10px 14px;
+      background: #3b1a1a;
+      color: #f87171;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    /* ─── Results View ─── */
+    #results-view { display: none; }
+
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #262626;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+    }
+    .nav-bar .spacer { flex: 1; }
+    .counter {
+      font-size: 13px;
+      color: #888;
+      min-width: 90px;
+      text-align: center;
+    }
+
+    /* ─── Issue Card ─── */
+    .issue-card {
+      background: #262626;
+      border: 1px solid #333;
+      border-left: 4px solid #4d8df5;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #e8e8e8;
+    }
+    .type-badge {
+      flex-shrink: 0;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .type-grammar     { background: #3b1a1a; color: #f87171; }
+    .type-spelling    { background: #3b1a1a; color: #f87171; }
+    .type-punctuation { background: #3b2a0a; color: #fbbf24; }
+    .type-clarity     { background: #1a2a3b; color: #60a5fa; }
+    .type-word-choice { background: #2a1a3b; color: #c084fc; }
+    .type-style       { background: #1a3b2a; color: #34d399; }
+    .type-default     { background: #333;    color: #aaa; }
+
+    /* ─── Text Display ─── */
+    .text-display {
+      background: #262626;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 28px 32px;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 15px;
+      line-height: 1.85;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      color: #e8e8e8;
+    }
+    .ellipsis { color: #555; font-style: normal; }
+
+    .highlight {
+      background: #4a3a00;
+      color: #fde68a;
+      border-radius: 2px;
+      cursor: pointer;
+      padding: 1px 0;
+      transition: background 0.1s;
+    }
+    .highlight:hover { background: #5a4800; }
+    .highlight.active {
+      background: #4d8df5;
+      color: #fff;
+      border-radius: 3px;
+    }
+
+    /* ─── Loading Overlay ─── */
+    #loading {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 200;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+    }
+    #loading.visible { display: flex; }
+    .spinner {
+      width: 38px;
+      height: 38px;
+      border: 3px solid #333;
+      border-top-color: #4d8df5;
+      border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #loading p { font-size: 14px; color: #888; }
+
+    .no-issues {
+      text-align: center;
+      padding: 48px 0;
+      color: #666;
+      font-size: 15px;
+    }
+
+    /* ─── Help Button ─── */
+    .help-btn {
+      margin-left: auto;
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      border-radius: 50%;
+      background: #333;
+      color: #aaa;
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: none;
+      transition: background 0.12s, color 0.12s;
+    }
+    .help-btn:hover { background: #4d8df5; color: #fff; }
+
+    /* ─── Help Modal ─── */
+    #help-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 300;
+      align-items: center;
+      justify-content: center;
+    }
+    #help-modal.visible { display: flex; }
+
+    .modal-box {
+      background: #262626;
+      border: 1px solid #444;
+      border-radius: 12px;
+      padding: 32px 36px;
+      max-width: 540px;
+      width: 90%;
+      color: #e8e8e8;
+      position: relative;
+    }
+    .modal-box h2 {
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: #fff;
+    }
+    .modal-box h3 {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #4d8df5;
+      margin: 20px 0 6px;
+    }
+    .modal-box h3:first-of-type { margin-top: 0; }
+    .modal-box p {
+      font-size: 14px;
+      line-height: 1.65;
+      color: #bbb;
+      margin-bottom: 4px;
+    }
+    .modal-box a {
+      color: #4d8df5;
+      text-decoration: none;
+    }
+    .modal-box a:hover { text-decoration: underline; }
+    .modal-box ol {
+      padding-left: 18px;
+      font-size: 14px;
+      line-height: 1.8;
+      color: #bbb;
+    }
+    .modal-close {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      background: none;
+      border: none;
+      color: #666;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+    .modal-close:hover { color: #e8e8e8; background: #333; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Stone Literary LLC Editor</h1>
+  <button class="help-btn" onclick="toggleHelp()" title="Help">?</button>
+</header>
+
+<!-- ── Help Modal ── -->
+<div id="help-modal" onclick="closeHelpOnBackdrop(event)">
+  <div class="modal-box">
+    <button class="modal-close" onclick="toggleHelp()">✕</button>
+    <h2>Getting Started</h2>
+
+    <h3>What this app does</h3>
+    <p>Paste your manuscript or document text and the app will scan it for mechanical errors — spelling, grammar, and punctuation. Each issue is highlighted so you can review it and decide whether to fix it or keep it as intentional author voice.</p>
+
+    <h3>Getting an API Key</h3>
+    <ol>
+      <li>Go to <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a></li>
+      <li>Create a free account or sign in</li>
+      <li>Navigate to <strong>API Keys</strong> and click <strong>Create Key</strong></li>
+      <li>Copy the key — it starts with <code style="color:#4d8df5">sk-ant-</code></li>
+    </ol>
+
+    <h3>Using the app</h3>
+    <ol>
+      <li>Paste your API key into the key field — it is saved automatically after first use</li>
+      <li>Paste your text into the main area (up to ~10,000 words)</li>
+      <li>Click <strong>Analyze Text</strong> and wait a few seconds</li>
+      <li>Use <strong>Next / Prev</strong> to step through each flagged issue</li>
+      <li>Review the suggestion — fix it in your document or skip it if it's intentional</li>
+      <li>Click <strong>New</strong> to start a fresh session</li>
+    </ol>
+
+    <h3>Note on API costs</h3>
+    <p>Each analysis uses the Anthropic API, which charges per use. A 10,000-word document costs roughly $0.01–$0.03. Usage is billed directly to your Anthropic account.</p>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- ── Input View ── -->
+  <div id="input-view">
+    <div class="label">Anthropic API Key</div>
+    <div class="api-row">
+      <input type="password" id="api-key" placeholder="sk-ant-api03-..." autocomplete="off" />
+      <button class="btn-ghost" id="show-key-btn" onclick="toggleKeyVisibility()">Show</button>
+    </div>
+
+    <div class="label">Text to Review</div>
+    <textarea id="text-input" placeholder="Paste your text here…" oninput="updateWordCount()"></textarea>
+
+    <div class="bottom-row">
+      <button class="btn-primary" id="analyze-btn" onclick="analyze()">Analyze Text</button>
+      <span id="word-count">0 words</span>
+    </div>
+    <div id="input-error"></div>
+  </div>
+
+  <!-- ── Results View ── -->
+  <div id="results-view">
+    <div class="nav-bar">
+      <button class="btn-ghost" onclick="backToInput()">← Back</button>
+      <button class="btn-ghost" onclick="newSession()">New</button>
+      <div class="spacer"></div>
+      <button class="btn-ghost" id="prev-btn" onclick="navigate(-1)">← Prev</button>
+      <span class="counter" id="issue-counter"></span>
+      <button class="btn-primary" id="next-btn" onclick="navigate(1)">Next →</button>
+    </div>
+
+    <div class="issue-card" id="issue-card">
+      <span class="type-badge" id="issue-type-badge"></span>
+      <span id="issue-desc"></span>
+    </div>
+
+    <div class="text-display" id="text-display"></div>
+  </div>
+
+</div>
+
+<!-- ── Loading ── -->
+<div id="loading">
+  <div class="spinner"></div>
+  <p>Analyzing your text…</p>
+</div>
+
+<script>
+  // ── State ──────────────────────────────────────────────────────────────────
+  let issues      = [];   // raw from API: [{text, issue, type}]
+  let ranges      = [];   // [{start, end, issueIndex}] sorted by position
+  let current     = 0;    // index into ranges
+  let docText     = '';
+
+  // ── Init ───────────────────────────────────────────────────────────────────
+  window.addEventListener('load', () => {
+    const stored = localStorage.getItem('editor_api_key');
+    if (stored) document.getElementById('api-key').value = stored;
+    updateWordCount();
+  });
+
+  // ── UI helpers ─────────────────────────────────────────────────────────────
+  function updateWordCount() {
+    const t = document.getElementById('text-input').value.trim();
+    const n = t ? t.split(/\s+/).length : 0;
+    document.getElementById('word-count').textContent = `${n.toLocaleString()} word${n === 1 ? '' : 's'}`;
+  }
+
+  function toggleKeyVisibility() {
+    const inp = document.getElementById('api-key');
+    const btn = document.getElementById('show-key-btn');
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+    btn.textContent = inp.type === 'password' ? 'Show' : 'Hide';
+  }
+
+  function showError(msg) {
+    document.getElementById('input-error').innerHTML =
+      `<div class="error-box">${msg}</div>`;
+  }
+  function clearError() {
+    document.getElementById('input-error').innerHTML = '';
+  }
+
+  function setLoading(on) {
+    document.getElementById('loading').classList.toggle('visible', on);
+    document.getElementById('analyze-btn').disabled = on;
+  }
+
+  // ── Analyze ────────────────────────────────────────────────────────────────
+  async function analyze() {
+    const apiKey = document.getElementById('api-key').value.trim();
+    const text   = document.getElementById('text-input').value.trim();
+
+    if (!apiKey) { showError('Please enter your Anthropic API key.'); return; }
+    if (!text)   { showError('Please paste some text to analyze.');   return; }
+    clearError();
+
+    localStorage.setItem('editor_api_key', apiKey);
+    setLoading(true);
+
+    try {
+      const res  = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, apiKey })
+      });
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || 'Analysis failed');
+
+      docText = text;
+      issues  = data.issues;
+
+      buildRanges();
+      current = 0;
+      switchToResults();
+
+    } catch (err) {
+      showError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // ── Build highlight ranges ─────────────────────────────────────────────────
+  function buildRanges() {
+    ranges = [];
+    const used = [];
+
+    for (let i = 0; i < issues.length; i++) {
+      const r = findInDoc(issues[i].text, used);
+      if (r) {
+        ranges.push({ ...r, issueIndex: i });
+        used.push(r);
+      }
+    }
+
+    // Sort top-to-bottom so Prev/Next follows reading order
+    ranges.sort((a, b) => a.start - b.start);
+  }
+
+  function findInDoc(needle, usedRanges) {
+    if (!needle || needle.length < 2) return null;
+
+    const hayLower    = docText.toLowerCase();
+    const needleLower = needle.toLowerCase();
+    let pos = 0;
+
+    while (pos < hayLower.length) {
+      const idx = hayLower.indexOf(needleLower, pos);
+      if (idx === -1) break;
+
+      const end = idx + needle.length;
+      const overlaps = usedRanges.some(r => idx < r.end && end > r.start);
+      if (!overlaps) return { start: idx, end };
+
+      pos = idx + 1;
+    }
+
+    // Retry with trimmed needle (handles leading/trailing whitespace from Claude)
+    const trimmed = needle.trim();
+    if (trimmed !== needle && trimmed.length >= 2) return findInDoc(trimmed, usedRanges);
+
+    return null;
+  }
+
+  // ── Snippet rendering ──────────────────────────────────────────────────────
+  function getSnippetBounds(idx) {
+    const r = ranges[idx];
+    const CONTEXT = 300;
+
+    const rawStart = Math.max(0, r.start - CONTEXT);
+    const rawEnd   = Math.min(docText.length, r.end + CONTEXT);
+
+    let sStart = rawStart;
+    let sEnd   = rawEnd;
+
+    // Snap start forward to beginning of a sentence
+    if (rawStart > 0) {
+      const before = docText.slice(rawStart, r.start);
+      let best = -1;
+      ['. ', '! ', '? ', '\n'].forEach(sep => {
+        const i = before.lastIndexOf(sep);
+        if (i >= 0) {
+          const pos = i + (sep === '\n' ? 1 : sep.length);
+          if (pos > best) best = pos;
+        }
+      });
+      if (best >= 0) sStart = rawStart + best;
+      else {
+        const sp = before.indexOf(' ');
+        if (sp >= 0) sStart = rawStart + sp + 1;
+      }
+    }
+
+    // Snap end to end of a sentence
+    if (rawEnd < docText.length) {
+      const after = docText.slice(r.end, rawEnd);
+      let best = Infinity;
+      ['. ', '! ', '? '].forEach(sep => {
+        const i = after.indexOf(sep);
+        if (i >= 0 && i + 1 < best) best = i + 1;
+      });
+      const nl = after.indexOf('\n');
+      if (nl >= 0 && nl < best) best = nl + 1;
+      if (best < Infinity) sEnd = r.end + best;
+    }
+
+    return { sStart, sEnd };
+  }
+
+  function renderSnippet(idx) {
+    const display = document.getElementById('text-display');
+
+    if (ranges.length === 0) {
+      display.innerHTML = `<div class="no-issues">No issues found — your text looks great.</div>`;
+      return;
+    }
+
+    const { sStart, sEnd } = getSnippetBounds(idx);
+
+    // All ranges visible within this snippet window
+    const visible = ranges
+      .map((r, i) => ({ ...r, ri: i }))
+      .filter(r => r.start >= sStart && r.end <= sEnd);
+
+    let html = sStart > 0 ? '<span class="ellipsis">… </span>' : '';
+    let pos  = sStart;
+
+    for (const r of visible) {
+      if (r.start < pos) continue;
+      html += escHtml(docText.slice(pos, r.start));
+      html += `<span class="highlight${r.ri === idx ? ' active' : ''}" data-ri="${r.ri}" onclick="jumpTo(${r.ri})">`
+            + escHtml(docText.slice(r.start, r.end))
+            + `</span>`;
+      pos = r.end;
+    }
+
+    html += escHtml(docText.slice(pos, sEnd));
+    html += sEnd < docText.length ? '<span class="ellipsis"> …</span>' : '';
+
+    display.innerHTML = html;
+  }
+
+  function escHtml(s) {
+    return s.replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+  }
+
+  // ── Navigation ─────────────────────────────────────────────────────────────
+  function navigate(dir) {
+    const next = current + dir;
+    if (next < 0 || next >= ranges.length) return;
+    jumpTo(next);
+  }
+
+  function jumpTo(idx) {
+    current = idx;
+    renderSnippet(idx);
+    updateIssueCard();
+  }
+
+  function updateIssueCard() {
+    if (ranges.length === 0) return;
+
+    const r     = ranges[current];
+    const issue = issues[r.issueIndex];
+    const type  = (issue.type || 'default').replace(/[\s_]/g, '-').toLowerCase();
+
+    document.getElementById('issue-counter').textContent =
+      `${current + 1} of ${ranges.length}`;
+
+    const badge = document.getElementById('issue-type-badge');
+    badge.textContent = issue.type || 'issue';
+    badge.className   = `type-badge type-${type}`;
+
+    document.getElementById('issue-desc').textContent = issue.issue;
+
+    document.getElementById('prev-btn').disabled = current === 0;
+    document.getElementById('next-btn').disabled = current === ranges.length - 1;
+  }
+
+  // ── View switching ─────────────────────────────────────────────────────────
+  function switchToResults() {
+    document.getElementById('input-view').style.display   = 'none';
+    document.getElementById('results-view').style.display = 'block';
+
+    if (ranges.length === 0) {
+      document.getElementById('issue-card').style.display  = 'none';
+      document.getElementById('issue-counter').textContent = 'No issues';
+      document.getElementById('prev-btn').disabled = true;
+      document.getElementById('next-btn').disabled = true;
+    } else {
+      document.getElementById('issue-card').style.display = '';
+      updateIssueCard();
+    }
+
+    renderSnippet(current);
+  }
+
+  function backToInput() {
+    document.getElementById('input-view').style.display   = 'block';
+    document.getElementById('results-view').style.display = 'none';
+    document.getElementById('issue-card').style.display   = '';
+  }
+
+  function newSession() {
+    document.getElementById('text-input').value = '';
+    document.getElementById('word-count').textContent = '0 words';
+    issues  = [];
+    ranges  = [];
+    current = 0;
+    docText = '';
+    backToInput();
+  }
+
+  // ── Help modal ─────────────────────────────────────────────────────────────
+  function toggleHelp() {
+    document.getElementById('help-modal').classList.toggle('visible');
+  }
+
+  function closeHelpOnBackdrop(e) {
+    if (e.target === document.getElementById('help-modal')) toggleHelp();
+  }
+</script>
+</body>
+</html>
