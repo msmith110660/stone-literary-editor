@@ -11,7 +11,9 @@
       "Bash(python -c \"import PIL; print\\('pillow ok'\\)\")",
       "Bash(python -c \"import pdf2image; print\\('pdf2image ok'\\)\")",
       "Bash(pip install:*)",
-      "Bash(python -c ':*)"
+      "Bash(python -c ':*)",
+      "Bash(where gh:*)",
+      "Bash(gh --version)"
     ]
   }
 }
