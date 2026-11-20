@@ -60,9 +60,21 @@ Return ONLY a valid JSON array. Each element must have:
 Return ONLY the JSON array. No markdown fences, no explanation, no commentary.`;
 }
 
+// ── Models ─────────────────────────────────────────────────────────────────
+const DEFAULT_MODEL = 'claude-sonnet-4-6';
+// Models that support the server-side refusal fallback ("fallbacks": "default")
+const FALLBACK_MODELS = new Set(['claude-opus-5-5', 'claude-sonnet-5-5']);
+
 // ── Analyze endpoint ───────────────────────────────────────────────────────
 app.post('/api/analyze', async (req, res) => {
   const { text, apiKey, genre, severity, ignoreList } = req.body;
+  const model = typeof req.body.model === 'string' && req.body.model.trim()
+    ? req.body.model.trim()
+    : DEFAULT_MODEL;
+
+  if (!/^claude-[a-z0-9.-]+$/i.test(model)) {
+    return res.status(400).json({ error: `"${model}" doesn't look like a Claude model ID (they start with "claude-").` });
+  }
 
   if (!text || typeof text !== 'string') {
     return res.status(400).json({ error: 'Missing text' });
@@ -77,21 +89,29 @@ app.post('/api/analyze', async (req, res) => {
     Array.isArray(ignoreList) ? ignoreList : []
   );
 
+  const headers = {
+    'Content-Type': 'application/json',
+    'x-api-key': apiKey,
+    'anthropic-version': '2023-06-01'
+  };
+  const body = {
+    model,
+    max_tokens: 16000,
+    system: systemPrompt,
+    messages: [{ role: 'user', content: text }]
+  };
+  if (FALLBACK_MODELS.has(model)) {
+    // If the model declines the request, let the API retry it on a fallback model
+    headers['anthropic-beta'] = 'server-side-fallback-2026-07-01';
+    body.fallbacks = 'default';
+  }
+
   let response;
   try {
     response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 8096,
-        system: systemPrompt,
-        messages: [{ role: 'user', content: text }]
-      })
+      headers,
+      body: JSON.stringify(body)
     });
   } catch (err) {
     return res.status(500).json({ error: `Network error: ${err.message}` });
@@ -100,13 +120,27 @@ app.post('/api/analyze', async (req, res) => {
   if (!response.ok) {
     let errBody;
     try { errBody = await response.json(); } catch { errBody = {}; }
+    if (response.status === 401) {
+      return res.status(401).json({
+        error: "Anthropic didn't accept this API key. Check that you copied the whole key (it starts with sk-ant-) and that it hasn't been deleted in the Console."
+      });
+    }
     return res.status(response.status).json({
       error: errBody.error?.message || `API error (${response.status})`
     });
   }
 
   const data = await response.json();
-  const content = data.content?.[0]?.text || '';
+
+  if (data.stop_reason === 'refusal') {
+    return res.status(422).json({ error: 'The model declined to analyze this text. Try a different model.' });
+  }
+
+  // Newer models can return thinking blocks before the answer, so find the text block(s)
+  const content = (data.content || [])
+    .filter(b => b.type === 'text')
+    .map(b => b.text)
+    .join('');
 
   let issues;
   try {

@@ -12,6 +12,7 @@ No rewrites are suggested. Ever.
 
 - **Genre modes** — Fiction, Non-fiction, Academic, Business. Adjusts how strictly rules are applied (Fiction respects fragments and stylistic voice; Academic applies strict standards)
 - **Pass types** — Errors Only (spelling, grammar, punctuation) or Full Pass (also flags clarity, word choice, style)
+- **Model picker**: choose which Claude model runs the pass. Options are Haiku 5.5 (fastest, cheapest), Sonnet 5.5, Sonnet 4.6 (the default), Opus 5.5 (most thorough), or any model ID you type in. Your choice is remembered
 - **Ignore List** — Add character names, invented words, or proper nouns you never want flagged. Saved permanently
 - **Context snippet** — Each issue shows just the surrounding sentences, not the entire document
 - **Prev / Next navigation** — Step through issues one at a time
@@ -19,8 +20,12 @@ No rewrites are suggested. Ever.
 
 ## Requirements
 
-- An [Anthropic API key](https://console.anthropic.com) — create a free account, navigate to API Keys, and generate one
-- Each analysis costs roughly **$0.01–$0.03** per 10,000 words, billed directly to your Anthropic account
+- Your own Anthropic API key. The app shows these steps the first time it opens, and again from the "Here's how to get one" link under the key box:
+  1. Create an account or sign in at the [Claude Console](https://platform.claude.com)
+  2. Add credit under **Settings → Billing**. The API is pay-as-you-go and billed separately from a Claude.ai subscription
+  3. Open [**Settings → API Keys**](https://platform.claude.com/settings/keys), click **Create Key**, and copy it. It starts with `sk-ant-` and is shown only once
+  4. Paste the key into the app. It is stored only on your computer
+- Usage is billed directly to your Anthropic account. Cost depends on the model you pick: Haiku is the cheapest and Opus costs the most (see [anthropic.com/pricing](https://www.anthropic.com/pricing))
 
 ## Installation
 
@@ -53,6 +58,7 @@ The installer will be output to the `dist/` folder.
 |---------|-------------|
 | v1.0.0  | Intermediate — errors only, no genre or pass type controls |
 | v2.0.0  | Advanced — genre selector, pass type, ignore list, dark theme |
+| v2.1.0  | Model picker, built-in API key guide, fresh installs start with no saved key |
 
 To build a specific version:
 

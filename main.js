@@ -1,10 +1,21 @@
-const { app, BrowserWindow, nativeImage } = require('electron');
+const { app, BrowserWindow, nativeImage, shell } = require('electron');
 const { app: server } = require('./server.js');
 const { execSync } = require('child_process');
 const path = require('path');
 
 const PORT = 3000;
+const APP_NAME = 'Stone Literary LLC Editor';
 let mainWindow;
+
+// Keep saved settings (including the API key) in a folder named after the app,
+// which is the folder the uninstaller removes. Running from source (npm start)
+// uses a separate "(Dev)" folder so a key saved while developing never shows up
+// in the installed app.
+app.setName(APP_NAME);
+app.setPath('userData', path.join(
+  app.getPath('appData'),
+  app.isPackaged ? APP_NAME : `${APP_NAME} (Dev)`
+));
 
 // Enforce single instance — if a second copy launches, focus the existing window
 const gotLock = app.requestSingleInstanceLock();
@@ -54,7 +65,24 @@ function createWindow() {
     }
   });
 
-  mainWindow.loadURL(`http://localhost:${PORT}`);
+  // Open web links (e.g. the Anthropic console) in the user's normal browser,
+  // not in a new app window
+  const appOrigin = `http://localhost:${PORT}`;
+  const openExternally = (url) => {
+    if (/^https?:\/\//i.test(url)) shell.openExternal(url);
+  };
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    openExternally(url);
+    return { action: 'deny' };
+  });
+  mainWindow.webContents.on('will-navigate', (event, url) => {
+    if (!url.startsWith(appOrigin)) {
+      event.preventDefault();
+      openExternally(url);
+    }
+  });
+
+  mainWindow.loadURL(appOrigin);
   mainWindow.on('closed', () => { mainWindow = null; });
 }
 

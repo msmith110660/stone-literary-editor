@@ -49,8 +49,24 @@
     .api-row {
       display: flex;
       gap: 8px;
+      margin-bottom: 6px;
+    }
+    .key-hint {
+      font-size: 12px;
+      color: #777;
       margin-bottom: 18px;
     }
+    .link-btn {
+      background: none; border: none; padding: 0;
+      color: #4d8df5; font: inherit; cursor: pointer;
+    }
+    .link-btn:hover { text-decoration: underline; }
+    .modal-box .note {
+      margin-top: 16px; padding: 10px 12px;
+      background: #222; border: 1px solid #333; border-radius: 6px;
+      font-size: 13px; color: #999;
+    }
+    .modal-box .btn-primary { margin-top: 18px; }
     .api-row input {
       flex: 1;
       padding: 9px 12px;
@@ -103,6 +119,21 @@
     }
     .pill:hover { background: #383838; color: #e8e8e8; }
     .pill.active { background: #4d8df5; color: #fff; border-color: #4d8df5; }
+
+    /* ─── Model Picker ─── */
+    .model-select, .model-custom {
+      padding: 5px 10px;
+      border: 1px solid #3a3a3a;
+      border-radius: 6px;
+      background: #2e2e2e;
+      color: #e8e8e8;
+      font-size: 13px;
+      outline: none;
+    }
+    .model-select { cursor: pointer; }
+    .model-custom { font-family: 'SF Mono', 'Consolas', monospace; width: 190px; }
+    .model-select:focus, .model-custom:focus { border-color: #4d8df5; }
+    .model-hint { font-size: 12px; color: #777; }
 
     /* ─── Ignore List ─── */
     .ignore-section { margin-bottom: 16px; }
@@ -423,13 +454,7 @@
     <p>Paste your manuscript or document and the app scans it for errors. Each flagged issue is highlighted so you can review it and decide whether to fix it or keep it as intentional author voice.</p>
 
     <h3>Getting an API Key</h3>
-    <ol>
-      <li>Go to <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a></li>
-      <li>Create a free account or sign in</li>
-      <li>Navigate to <strong>API Keys</strong> and click <strong>Create Key</strong></li>
-      <li>Copy the key — it starts with <code style="color:#4d8df5">sk-ant-</code></li>
-    </ol>
-    <p>Your key is saved automatically after first use.</p>
+    <p>You need your own Anthropic API key to use this app. <button class="link-btn" onclick="toggleHelp(); openKeyHelp()">Step-by-step instructions →</button></p>
 
     <h3>Genre</h3>
     <ul>
@@ -445,6 +470,15 @@
       <li><strong>Full Pass</strong> — also flags clarity, word choice, and style</li>
     </ul>
 
+    <h3>Model</h3>
+    <ul>
+      <li><strong>Haiku 5.5</strong> — fastest and cheapest; fine for quick spelling checks, may miss subtler errors</li>
+      <li><strong>Sonnet 5.5</strong> — strong all-rounder at moderate cost</li>
+      <li><strong>Sonnet 4.6</strong> — the model this app originally used</li>
+      <li><strong>Opus 5.5</strong> — most thorough; costs the most and takes longest</li>
+      <li><strong>Custom</strong> — type any Claude model ID, for example a newly released model</li>
+    </ul>
+
     <h3>Ignore List</h3>
     <p>Add character names, invented words, or any terms you don't want flagged. Separate entries with commas.</p>
 
@@ -458,7 +492,31 @@
     </ol>
 
     <h3>API costs</h3>
-    <p>Each analysis costs roughly $0.01–$0.03 per 10,000 words, billed directly to your Anthropic account.</p>
+    <p>Cost depends on the model you pick and is billed directly to your Anthropic account. Haiku is the cheapest; Opus costs the most. See <a href="https://www.anthropic.com/pricing" target="_blank">anthropic.com/pricing</a> for current rates.</p>
+  </div>
+</div>
+
+<!-- ── API Key Instructions Modal ── -->
+<div id="key-modal" class="modal-overlay" onclick="closeOnBackdrop(event,'key-modal')">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeKeyHelp()">✕</button>
+    <h2>Get your own API key</h2>
+    <p>This app uses Claude, made by Anthropic, to check your writing. To use it, you need your own Anthropic API key. It's like a password that lets the app use Claude on your account. You pay Anthropic directly for what you use.</p>
+
+    <h3>Step by step</h3>
+    <ol>
+      <li>Go to the Claude Console at <a href="https://platform.claude.com" target="_blank">platform.claude.com</a> and create an account, or sign in.</li>
+      <li>Add credit to your account: open <strong>Settings → Billing</strong> and buy a small amount of credit. The API is pay-as-you-go and is billed separately from a Claude.ai subscription.</li>
+      <li>Open <a href="https://platform.claude.com/settings/keys" target="_blank"><strong>Settings → API Keys</strong></a> and click <strong>Create Key</strong>. Give it a name you'll recognize, such as "Stone Editor".</li>
+      <li>Copy the key right away. It starts with <code style="color:#4d8df5">sk-ant-</code>, and the Console shows it only once.</li>
+      <li>Paste it into the <strong>Anthropic API Key</strong> box in this app. It's saved automatically the first time you click <strong>Analyze Text</strong>.</li>
+    </ol>
+
+    <div class="note">
+      <strong>Keep your key private.</strong> Anyone who has it can spend your credit. This app stores the key only on this computer and sends it only to Anthropic. Uninstalling the app deletes it. If a key is ever exposed, delete it in the Console and create a new one. You can also set a monthly spending limit in the Console.
+    </div>
+
+    <button class="btn-primary" onclick="closeKeyHelp()">Got it</button>
   </div>
 </div>
 
@@ -471,6 +529,9 @@
     <div class="api-row">
       <input type="password" id="api-key" placeholder="sk-ant-api03-..." autocomplete="off" />
       <button class="btn-ghost" id="show-key-btn" onclick="toggleKeyVisibility()">Show</button>
+    </div>
+    <div class="key-hint">
+      Don't have a key? <button class="link-btn" onclick="openKeyHelp()">Here's how to get one</button>
     </div>
 
     <!-- Settings -->
@@ -490,6 +551,19 @@
           <button class="pill" data-value="errors" onclick="setPill('severity',this)">Errors Only</button>
           <button class="pill" data-value="full"   onclick="setPill('severity',this)">Full Pass</button>
         </div>
+      </div>
+      <div class="setting-group">
+        <span class="setting-label">Model</span>
+        <select class="model-select" id="model-select" onchange="onModelChange()">
+          <option value="claude-haiku-5-5">Claude Haiku 5.5</option>
+          <option value="claude-sonnet-5-5">Claude Sonnet 5.5</option>
+          <option value="claude-sonnet-4-6">Claude Sonnet 4.6</option>
+          <option value="claude-opus-5-5">Claude Opus 5.5</option>
+          <option value="custom">Custom…</option>
+        </select>
+        <input class="model-custom" id="model-custom" type="text" placeholder="model ID, e.g. claude-…"
+               style="display:none" oninput="onModelChange()" autocomplete="off" spellcheck="false" />
+        <span class="model-hint" id="model-hint"></span>
       </div>
     </div>
 
@@ -558,14 +632,34 @@
   let severity   = 'errors';
   let ignoreList = [];
 
+  const DEFAULT_MODEL = 'claude-sonnet-4-6';
+  const MODEL_HINTS = {
+    'claude-haiku-5-5':  'Fastest · lowest cost',
+    'claude-sonnet-5-5': 'Balanced',
+    'claude-sonnet-4-6': 'Original model',
+    'claude-opus-5-5':   'Most thorough · highest cost',
+    'custom':            ''
+  };
+
   // ── Init ───────────────────────────────────────────────────────────────────
   window.addEventListener('load', () => {
     const key = localStorage.getItem('editor_api_key');
     if (key) document.getElementById('api-key').value = key;
+    else openKeyHelp();   // first launch: show how to get a key
 
     genre      = localStorage.getItem('editor_genre')    || 'fiction';
     severity   = localStorage.getItem('editor_severity') || 'errors';
     ignoreList = JSON.parse(localStorage.getItem('editor_ignore') || '[]');
+
+    const savedModel = localStorage.getItem('editor_model') || DEFAULT_MODEL;
+    const select = document.getElementById('model-select');
+    if ([...select.options].some(o => o.value === savedModel && o.value !== 'custom')) {
+      select.value = savedModel;
+    } else {
+      select.value = 'custom';
+      document.getElementById('model-custom').value = savedModel;
+    }
+    onModelChange();
 
     activatePills();
     updateIgnoreCount();
@@ -597,6 +691,23 @@
       severity = btn.dataset.value;
       localStorage.setItem('editor_severity', severity);
     }
+  }
+
+  // ── Model ──────────────────────────────────────────────────────────────────
+  function getModel() {
+    const choice = document.getElementById('model-select').value;
+    return choice === 'custom'
+      ? document.getElementById('model-custom').value.trim()
+      : choice;
+  }
+
+  function onModelChange() {
+    const choice = document.getElementById('model-select').value;
+    const custom = document.getElementById('model-custom');
+    custom.style.display = choice === 'custom' ? '' : 'none';
+    document.getElementById('model-hint').textContent = MODEL_HINTS[choice] || '';
+    const model = getModel();
+    if (model) localStorage.setItem('editor_model', model);
   }
 
   // ── Ignore List ────────────────────────────────────────────────────────────
@@ -664,8 +775,10 @@
     const apiKey = document.getElementById('api-key').value.trim();
     const text   = document.getElementById('text-input').value.trim();
 
-    if (!apiKey) { showError('Please enter your Anthropic API key.'); return; }
+    if (!apiKey) { showError('Please enter your Anthropic API key. <button class="link-btn" onclick="openKeyHelp()">How to get one</button>'); return; }
     if (!text)   { showError('Please paste some text to analyze.');   return; }
+    const model = getModel();
+    if (!model)  { showError('Please enter a model ID, or pick a model from the list.'); return; }
     clearError();
 
     localStorage.setItem('editor_api_key', apiKey);
@@ -677,7 +790,7 @@
       const res  = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, apiKey, genre, severity, ignoreList })
+        body: JSON.stringify({ text, apiKey, model, genre, severity, ignoreList })
       });
       const data = await res.json();
 
@@ -859,6 +972,14 @@
   // ── Help modal ─────────────────────────────────────────────────────────────
   function toggleHelp() {
     document.getElementById('help-modal').classList.toggle('visible');
+  }
+
+  function openKeyHelp() {
+    document.getElementById('key-modal').classList.add('visible');
+  }
+  function closeKeyHelp() {
+    document.getElementById('key-modal').classList.remove('visible');
+    document.getElementById('api-key').focus();
   }
 
   function closeOnBackdrop(e, id) {
